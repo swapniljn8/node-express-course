@@ -1,0 +1,139 @@
+- JavaScript is mostly executed on a single thread in Node.js and in the browser (with some exceptions such as worker threads)
+ - // CommonJS, every file is module (by default)
+ - // Modules - Encapsulated Code (only share minimum)
+ - // GLOBALS  - NO WINDOW !!!!
+
+// __dirname  - path to current directory
+// __filename - file name
+// require    - function to use modules (CommonJS)
+// module     - info about current module (file)
+// process    - info about env where the program is being executed
+    - Node. js provides the facility to get process information such as process id, architecture, platform, version, release, uptime, upu usage etc. It can also be used to kill process, set uid, set groups, unmask etc. The process is a global object, an instance of EventEmitter, can be accessed from anywhere.
+ - there is no browser in the Nodejs as this is backend runtime environment so there will be no browser and document in here
+ - node uses the CommonJS, every file in node is a module
+ - if you want to expose some property from one module than we use the 'module.export'
+ - if you want to import some property from other module than we use 'require'
+ - Q. can't we just import/require only function from the module rather than import/require whole property from the module.
+
+
+ --------------------------------
+ Built-in modules: these are some , actual list is numerous modules
+- OS 
+    - get the information about the OS
+    - type
+- PATH 
+    - since the project is deployed in the different environment than directory str. can be different and we might need to access some modules than PATH module helps to reach and find the path.
+- FS - file structre : 
+    - require('fs')
+    - async :
+        - const { readFile, writeFile,appendFile } = require('fs') => three parameter
+            - path of file, content, callback function for err and result handling
+    - sync
+        - const { readFileSync, writeFileSync } = require('fs') -> three param
+            - path of file, content,  { flag: 'w'/'a' } -> a = append, w = override
+    - In both async and sync it will create file if not present
+    - In both the cases of writeFileSync -> it will create the fill if it does not exist and 3rd param is the mode : 'a' -> append, 'w' -> write. And for 'a' -> it will append into file and for 'w' it will override.
+    - By default - 'w'
+- HTTP : 
+    - require('http')
+    - createServerInstance = httpinstanc.createServer((req,res) =>{//logic of req.url -> handling for each page; and end the reponse with res.end('<response ends>')})
+    - createServerInstance.listen(portname)
+    - and then go to chrome and localhost:portname
+--------------------------------
+npm :
+npm - global commandm comes with node
+npm --version
+
+local dependency - use it only in this particular object
+npm i <packageName>
+
+
+global dependency - use it in any project
+npm install -g <packageName>
+sudo npm install -g <packageName> {mac}
+----------------------------------------
+package.json and npm
+ - whenever we are installing any packing or creating any package we start by the command npm init -> which ask about the package.json content so that for the project it can save all the metadata of the package.
+ - directly create the packge.json ---command--> npm init -y
+ - most imp use of the package.json is storing dependency that is require to install the package, which the packge is using
+- if you install a npm package and it has dependency like while installing boostrap it required jquery as well, so in package.json it will only show the bootsrap as the dependency but it will also install jquery in the node-modules folder.
+- IMPORTANT :
+    - so all the dependency are not pushed on github
+    - .gitignore : dependency are mentioned in the package, using .gitignore we ignore the node-modules package and then it will only push the changes
+    - 'npm install' : when someone clone repo than package.json has the dependency in it they need to run the command : 'npm install', it will install all the dependencies
+
+----------------------------------------------
+nodemon and npx
+nodemon : automate the process of restarting your Node.js application when code changes are detected.
+
+npx : npx is a package runner tool that comes with npm (Node Package Manager) starting from version 5.2.0. It allows you to execute Node.js packages directly, without having to install them globally or add them as project dependencies. The name "npx" stands for "Node Package eXecute.
+
+--------------------------------------------------
+package-lock.json
+ - sometimes the dependencies have there own dependencies and pacakge.json doesn't mention them, so package-lock.json have the detail of all the dependencies and there version so that while installing the package user have the same version of all the related dependencies which are used or inherited in the package.
+
+ -------------------------------------------------
+ event loop : 
+ So, the event loop in Node.js is like an efficient chef in a busy kitchen, making sure that your application handles multiple tasks without getting stuck, resulting in a responsive and performant application.
+
+console.log('first')
+setTimeout(() => {
+	console.log('second')  
+},0)
+console.log('third')
+
+
+output :this same behaviour is presnt in the normal JS as well
+first
+third
+second
+
+-- now what happens in this case if there is any operation in the async block of code which is taking lot of time, so it will halt the other server calls as well until the operations get successfully completed -> 
+refer :  01-node-tutorial\2-async-patterns\1-block.js
+-- What is promise ? is Promise is async in JS?
+Ans: Promises themselves are not inherently asynchronous.they are often used to work with asynchronous operations. used to represent the eventual completion (or failure) of an asynchronous operation. allows you to write non-blocking code and handle the results when they are ready.
+
+
+- const { readFile, writeFile } = require('fs').promises
+- const util = require('util')
+- const readFilePromise = util.promisify(readFile)
+- const writeFilePromise = util.promisify(writeFile)
+These are the ways you can directly get the promise of the async methods 
+
+
+-----------------------------------------------------------------
+Events infor :
+ - nodejs is event driven programming language
+ - even it is server side it is heavily used
+ - 'on' : listen for an event
+ - 'emit' : emit an event
+ - const EventEmitter = require('events') //return class/module
+ const obj = new EventEmitter()
+ obj.on('eventname', () => {
+    //task
+ })
+ obj.emit('eventname')
+
+
+ ----------------------------------------------
+ Using event emitter in Streams :
+  -HTTP server creation also works on event
+     - they have various event name which can be handled 
+     /* 
+     const server = http.createServer()
+     server.on('request',(req,res) => {
+        res.end('Request end')
+     })
+     */
+ - const stream = fs.createReadStream('./content/big.txt')
+ stream.on('data', (result) => { 
+    log-> data
+ })
+ - read data in chunk using createReadStream
+ - same applies when you are using the createReadStream -> inside the HTTP 
+const fileStream = fs.createReadStream('./content/big.txt', 'utf8') 
+ fileStream.on('open', () => {
+      fileStream.pipe(res)
+    })
+ - now this pipe method let us write data in chunk in response
+

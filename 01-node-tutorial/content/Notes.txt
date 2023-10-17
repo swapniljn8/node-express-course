@@ -1,2 +1,0 @@
- - there is no browser in the Nodejs as this is backend runtime environment so there will be no browser and document in here
- - node uses the CommonJS, every file in node is a module
