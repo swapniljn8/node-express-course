@@ -1,3 +1,4 @@
+======================NODE JS===========================================
 - JavaScript is mostly executed on a single thread in Node.js and in the browser (with some exceptions such as worker threads)
  - // CommonJS, every file is module (by default)
  - // Modules - Encapsulated Code (only share minimum)
@@ -16,7 +17,7 @@
  - Q. can't we just import/require only function from the module rather than import/require whole property from the module.
 
 
- --------------------------------
+ -------------Built-in-modules-------------------
  Built-in modules: these are some , actual list is numerous modules
 - OS 
     - get the information about the OS
@@ -39,7 +40,7 @@
     - createServerInstance = httpinstanc.createServer((req,res) =>{//logic of req.url -> handling for each page; and end the reponse with res.end('<response ends>')})
     - createServerInstance.listen(portname)
     - and then go to chrome and localhost:portname
---------------------------------
+-------------npm-------------------
 npm :
 npm - global commandm comes with node
 npm --version
@@ -51,7 +52,7 @@ npm i <packageName>
 global dependency - use it in any project
 npm install -g <packageName>
 sudo npm install -g <packageName> {mac}
-----------------------------------------
+------------------package.json----------------------
 package.json and npm
  - whenever we are installing any packing or creating any package we start by the command npm init -> which ask about the package.json content so that for the project it can save all the metadata of the package.
  - directly create the packge.json ---command--> npm init -y
@@ -62,17 +63,17 @@ package.json and npm
     - .gitignore : dependency are mentioned in the package, using .gitignore we ignore the node-modules package and then it will only push the changes
     - 'npm install' : when someone clone repo than package.json has the dependency in it they need to run the command : 'npm install', it will install all the dependencies
 
-----------------------------------------------
+--------------------nodemon--------------------------
 nodemon and npx
 nodemon : automate the process of restarting your Node.js application when code changes are detected.
 
 npx : npx is a package runner tool that comes with npm (Node Package Manager) starting from version 5.2.0. It allows you to execute Node.js packages directly, without having to install them globally or add them as project dependencies. The name "npx" stands for "Node Package eXecute.
 
---------------------------------------------------
+-------------------package-lock-------------------------------
 package-lock.json
  - sometimes the dependencies have there own dependencies and pacakge.json doesn't mention them, so package-lock.json have the detail of all the dependencies and there version so that while installing the package user have the same version of all the related dependencies which are used or inherited in the package.
 
- -------------------------------------------------
+ --------------------event loop-----------------------------
  event loop : 
  So, the event loop in Node.js is like an efficient chef in a busy kitchen, making sure that your application handles multiple tasks without getting stuck, resulting in a responsive and performant application.
 
@@ -101,7 +102,7 @@ Ans: Promises themselves are not inherently asynchronous.they are often used to 
 These are the ways you can directly get the promise of the async methods 
 
 
------------------------------------------------------------------
+----------------------Events-------------------------------------------
 Events infor :
  - nodejs is event driven programming language
  - even it is server side it is heavily used
@@ -115,7 +116,7 @@ Events infor :
  obj.emit('eventname')
 
 
- ----------------------------------------------
+ -----------------event emitter-----------------------------
  Using event emitter in Streams :
   -HTTP server creation also works on event
      - they have various event name which can be handled 
@@ -136,4 +137,89 @@ const fileStream = fs.createReadStream('./content/big.txt', 'utf8')
       fileStream.pipe(res)
     })
  - now this pipe method let us write data in chunk in response
+
+======================EXPRESS JS===========================================
+middleware in web applications is a powerful and flexible tool that helps you manage the request-response cycle, enhance security, improve code organization, and facilitate extensibility and maintainability. It's a fundamental concept in web development that contributes to the robustness and functionality of modern web applications.
+Express js helps to create a middleware, in simpler terms it is an class where there are some extra checks and conditions are present before processing request to the server, it also protect server from direct access.
+NOTE : THESE ARE JUST CLASSES WHICH ARE BEING NAMED THE {FRONT END, MIDDLEWARE, SERVER}
+
+Express : it is built over the Node and HTTP module, so it is not like you can use Express without using Node. 
+Q. why do we need express instead of directly using http module ?
+ans : 
+
+request : In request we hit a remote addr so what is after ':' explained below 
+Remote Address : [54.237.133.81]:{443} => [...]-> this is building Address, {443} -> exact flat number inside that building, so all the flats in that building has same address just each flat has diff flat number inside the building.
+
+
+Ports : specific ports have some specific task, like department in a company.
+eg : 80 : for HTTP all WWW request comes through this.
+
+---------------Headers : setHead and writeHead------------------
+setHead : sets a single header.
+writeHead : set multiple headers at once.
+writeHead() takes precedence over setHeader() if both are used in the same request.
+res.writeHead(StatusCode, {})
+res.writeHead(200,{
+        'content-type' : 'text/html'//mime type : Multipurpose Internet Mail Extensions
+    })
+res.write(<file name>); // send the body of the response
+
+--------------------Express------------------
+ - Expres is not a built-in module of Nodejs
+ - Q. why do we need express?
+ - Ans : as you see in 01-http-basics and 02-http-app how hectic it is to call and handle each request of the http and for large project it will be really inefficient and hectic process to follow the http and use its method directly. so the Express was introduced to solve this issue and to make life of a developer easier.
+  - $ npm install express --no-save : To install Express temporarily and not add it to the dependencies list:
+
+
+  -------Code-----
+  const express = require("express");
+  // app.get
+// app.post
+// app.put
+// app.delete
+// app.all
+// app.use
+// app.listen
+app.all('*', (req, res) => {
+  res.status(404).send('<h1>resource not found</h1>')
+})
+app.get('/', (req, res) => {
+  console.log('user hit the resource')
+  res.status(200).send('Home Page')
+})
+-----------------------------------
+app.use(express.static('./public'))
+now this is a middleware function that actually setup the filename present inside the folder public, you can name folder anything. So you don't need to get all the Address of the files like css, js, img, svg they all will be covered under this.
+
+---------------------------------------- 
+rather then sending the html file in the response we will see the two ways to expose a directly to the browser so that we don't need to provide the individual files to the response.
+
+1) Using the static asset : SSR (server side rendering)
+Many web servers and web frameworks automatically look for a file named 'index.html'.Many web servers and web frameworks automatically look for a file named index.html
+ //app.use(express.static('./methods-public')) : this actually make a repo public
+
+2) Using the API :
+in this way server only handles the request and response from the client and then only send the json from the server. not like the SSR where we were sending the template from the server or making the directory public, so that client can render in. 
+
+
+------------------------------------------
+API : handing the req from the browser/client :
+app.get('/', (req, res) => {
+  res.json(products)
+})
+//products is the json formatted data 
+// insted one can also use res.send(products) to send the response, as we were doing previously
+
+
+#extra :
+    - using MAP in JavaScript:
+        - products = it is an json where nodes are id,name,image
+        -   const prodMap = products.map((product)=> {
+                const {id,name,image} = product;
+                return {id,name,image}
+            })
+Query params:
+The colon (:) in the Express framework is used to indicate a parameter in a route. For example, the route /users/:id tells Express that the id parameter is expected in the route. This parameter can then be accessed in the request object using the req.params property.
+
+
 

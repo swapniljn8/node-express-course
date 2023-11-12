@@ -3,7 +3,11 @@ const app = express()
 const { products } = require('./data')
 
 app.get('/', (req, res) => {
-  res.send('<h1> Home Page</h1><a href="/api/products">products</a>')
+  let string = '<h1> Home Page</h1><a href="/api/products/1">product1</a>'
+  string += ' <a href="/api/products/1/reviews/1">review1</a>'
+  string += ' <a href="/api/products/2">product2</a>'
+  string += ' <a href="/api/products/2/reviews/2">review2</a>'
+  res.send(string)
 })
 app.get('/api/products', (req, res) => {
   const newProducts = products.map((product) => {
@@ -18,13 +22,12 @@ app.get('/api/products/:productID', (req, res) => {
   // console.log(req.params)
   const { productID } = req.params
 
-  const singleProduct = products.find(
-    (product) => product.id === Number(productID)
+  const singleProduct = products.find((product) => 
+    product.id === Number(productID)
   )
   if (!singleProduct) {
     return res.status(404).send('Product Does Not Exist')
   }
-
   return res.json(singleProduct)
 })
 
