@@ -4,7 +4,7 @@ const path = require('path')
 const app = express()
 
 // setup static and middleware
-app.use(express.static('./public'))
+app.use(express.static('./public')) //this is server side rendering SSR we are using where we are sharing the whole template with the browser. another way is API which we will learn in the next example.
 
 // app.get('/', (req, res) => {
 //   res.sendFile(path.resolve(__dirname, './navbar-app/index.html'))
