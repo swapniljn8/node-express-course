@@ -67,7 +67,7 @@ app.delete('/api/people/:id', (req, res) => {
   if (!person) {
     return res
       .status(404)
-      .json({ success: false, msg: `no person with id ${req.params.id}` })
+      .json({ success: false, msg: `no person with id ${req.params.id}`})
   }
   const newPeople = people.filter(
     (person) => person.id !== Number(req.params.id)

@@ -72,7 +72,7 @@
           const h5 = document.createElement('h5')
           h5.textContent = data.person
           result.appendChild(h5)
-        } catch (error) {
+        } catch (error) {//this error instanct is provided by the axios.
           // console.log(error.response)
           formAlert.textContent = error.response.data.msg
         }

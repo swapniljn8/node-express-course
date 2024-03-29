@@ -9,7 +9,14 @@
 // require    - function to use modules (CommonJS)
 // module     - info about current module (file)
 // process    - info about env where the program is being executed
-    - Node. js provides the facility to get process information such as process id, architecture, platform, version, release, uptime, upu usage etc. It can also be used to kill process, set uid, set groups, unmask etc. The process is a global object, an instance of EventEmitter, can be accessed from anywhere.
+------------Modules vs Framework-------------------------
+- Modules : Node.js follows the CommonJS module system, where each file is treated as a module. Modules can export functions, objects, or variables that can be used in other modules.
+    - modules are not structred like two modules are not created to provide certain set of facilities in standard way. they are developed as a purpose of reusibility of the code.
+- Framework : A framework, on the other hand, is a higher-level abstract
+ion that provides a structured way to build and organize an entire application. It often includes predefined patterns, conventions, and functionality to help developers create applications more efficiently. Eg: Express
+-------------------------------------
+
+    - Node. js provides the facility to get process information such as process id, architecture, platform, version, release, uptime, cpu usage etc. It can also be used to kill process, set uid, set groups, unmask etc. The process is a global object, an instance of EventEmitter, can be accessed from anywhere.
  - there is no browser in the Nodejs as this is backend runtime environment so there will be no browser and document in here
  - node uses the CommonJS, every file in node is a module
  - if you want to expose some property from one module than we use the 'module.export'
@@ -42,7 +49,14 @@
     - and then go to chrome and localhost:portname
 -------------npm-------------------
 npm :
-npm - global commandm comes with node
+
+===================about npm======================
+In simple terms, npm (Node Package Manager) is like a giant online store for developers who are building websites or applications using JavaScript. Just like how you might go to a store to buy ingredients for cooking, developers use npm to find and download different packages (or pieces of code) that help them build their projects more efficiently.
+
+In addition to helping developers find and manage packages, npm also provides tools for developers to share their own code with others. So, if you've come up with a really useful piece of code, you can publish it to npm for other developers to use in their projects. It's like sharing your favorite cake recipe with friends so they can bake it too!
+
+======================================================
+npm - global command comes with node
 npm --version
 
 local dependency - use it only in this particular object
@@ -71,7 +85,7 @@ npx : npx is a package runner tool that comes with npm (Node Package Manager) st
 
 -------------------package-lock-------------------------------
 package-lock.json
- - sometimes the dependencies have there own dependencies and pacakge.json doesn't mention them, so package-lock.json have the detail of all the dependencies and there version so that while installing the package user have the same version of all the related dependencies which are used or inherited in the package.
+ - sometimes the dependencies have there own dependencies and pacakge.json doesnt mention them, so package-lock.json have the detail of all the dependencies and there version so that while installing the package user have the same version of all the related dependencies which are used or inherited in the package.
 
  --------------------event loop-----------------------------
  event loop : 
@@ -89,7 +103,7 @@ first
 third
 second
 
--- now what happens in this case if there is any operation in the async block of code which is taking lot of time, so it will halt the other server calls as well until the operations get successfully completed -> 
+-- now what happens in this case if there is any operation in the async block of code which is taking lot of time, so it will halt the other server calls as well until the operations get successfully completed. 
 refer :  01-node-tutorial\2-async-patterns\1-block.js
 -- What is promise ? is Promise is async in JS?
 Ans: Promises themselves are not inherently asynchronous.they are often used to work with asynchronous operations. used to represent the eventual completion (or failure) of an asynchronous operation. allows you to write non-blocking code and handle the results when they are ready.
@@ -100,7 +114,6 @@ Ans: Promises themselves are not inherently asynchronous.they are often used to 
 - const readFilePromise = util.promisify(readFile)
 - const writeFilePromise = util.promisify(writeFile)
 These are the ways you can directly get the promise of the async methods 
-
 
 ----------------------Events-------------------------------------------
 Events infor :
@@ -114,7 +127,6 @@ Events infor :
     //task
  })
  obj.emit('eventname')
-
 
  -----------------event emitter-----------------------------
  Using event emitter in Streams :
@@ -165,6 +177,9 @@ res.writeHead(200,{
 res.write(<file name>); // send the body of the response
 
 --------------------Express------------------
+http(status,get)->params(:/id)->query(?search=doe)->middleware(req,res,next)->http methods->router
+Express is a minimal and flexible Node.js web application framework that provides a robust set of features for web and mobile applications. Express itself is developed using JavaScript and is built on top of Node.js, which is a server-side JavaScript runtime.
+- handle HTTP requests, manage routes, and perform various server-side tasks.
  - Expres is not a built-in module of Nodejs
  - Q. why do we need express?
  - Ans : as you see in 01-http-basics and 02-http-app how hectic it is to call and handle each request of the http and for large project it will be really inefficient and hectic process to follow the http and use its method directly. so the Express was introduced to solve this issue and to make life of a developer easier.
@@ -218,8 +233,97 @@ app.get('/', (req, res) => {
                 const {id,name,image} = product;
                 return {id,name,image}
             })
+    - map method do nothing but to iterate over the json and then convert the required json into the map
+     - so more appropriate task is to convert the whole json into the map so that when we are sending the response than on client end user can directly handle the map and only the required attribute can be send to client so that data trnasfer can be minimal and client side can remain lightweight
 Query params:
 The colon (:) in the Express framework is used to indicate a parameter in a route. For example, the route /users/:id tells Express that the id parameter is expected in the route. This parameter can then be accessed in the request object using the req.params property.
 
+- Route parameter :
+    - /:productID : this lets the JS know about about the param which will be present in the URL
+    -   const {productID}  = req.params //gives the parameter from URL
+    -   const param  = req.params //gives the whole object
+        console.log(param);// {product : 1}
+        console.log(product); //1
 
 
+- Query :
+    - http://localhost:5000/api/v1/query?search=albany&limit=2
+    - in the above url after v1 everything is called query parameter.
+    - to access query param :
+        - In get method of the express : 
+            `
+            const {search,limit} = req.query
+            `
+- NOTE : YOU CANNOT SEND TWO RESPONSE IN SAME REQUEST , EXPRESS THROW ERROR FOR THIS. so always use return to send the response.
+
+
+
+-----------Middleware----------------
+- it is just another class. a set of code that comes before the database.
+- middleware are the function that execute during the request of the server.
+- whatever happens betweent the request and response is the middleware
+- //  req => middleware => res
+- req,res,next() -> these three things are there in the middleware function and the most important thing is to end the middleware function by providing either the end of the req-res cycle or passing the baton of middleware function to another middleware function using the next()
+- it is better to create a different file for the middleware function and export them from the file and to use them in the specified class use app.use('<url pattern for which to use middleware fn>', imported file)
+- the order of app.use in file matters, app.use will only be called for the statements after the app.use
+- if you want to use the middleware for specific url than 
+    app.use(<mention the URL for which specific middleware should be used>, )
+- inside the app.use([midd1,midd2]) -> order of midd1 and midd2 also matters, midd1 called first and midd2 then second
+----------------------
+http methods :
+
+-------get---------
+app.get('/api/people',(req,res) =>{
+    res.status(200).json({success:true, data:people})
+})
+- it is by default setup by the browser.
+- to get the data in case of get request one need to provide in URL as form of param or query. whereas in post we can pass it in body and then from express.urlencoded we can use the body that is present in the request.
+-------post-----change to db---
+app.post('/api/postman/people',(req,res) => {
+    const {name} = req.body
+    if(!name) {
+        return res.status(400).json({success:false, msg:"please provide name value"})
+    }
+    else {
+        return res.status(200).json({success:true, data:[...people,{'id':people[people.length-1].id+1,'name':name}]})
+    }
+})
+NOTE : always use the return statement when you are sending the respons. otherwise you will get 'Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client'
+- so this is the type of http method which let us make changes in the database.
+- before accessing the data in the request in the post reqest, we need to use a middleware that will make changes to the request so that we can access the body part of the request. 
+- app.use(express.urlencoded({extended : false})) - see the documentation in express doc. 
+- the above middleware helps us to directly access the request body. req.body
+- Content-Type: application/x-www-form-urlencoded : 
+- Now in the <02-express-tutorial\methods-public\index.html> file we were sending the post request from the html only so the content is 'application/x-www-form-urlencoded'
+- Next, we will be sending request from the javascript so the content-type would be different.
+
+
+-------put-------update----
+www.dns.com/api/orders/:id -> update a specific order (params + send data) 
+- 
+app.put('/api/postman/people/:id',(req,res)=>{
+    const {id} = req.params
+    const {name} = req.body
+    if(id && name) {
+        people.forEach((element,index) => {
+            if(element.id==id) {
+                element.name = name
+            }
+        });
+       return res.status(200).json({success:true, data:[...people]}) //always return the response if there is response present after this response.
+    }
+    else {
+        res.status(400).json({success:false, msg:"Id or Name is missing"})
+    }
+})
+ - to update the database
+
+---------------------
+Express routing : https://expressjs.com/en/guide/routing.html
+must read document to know about routing in express
+
+
+
+
+
+------------------------------------------
